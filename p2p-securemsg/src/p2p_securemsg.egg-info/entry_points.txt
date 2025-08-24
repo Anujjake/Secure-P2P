@@ -1,0 +1,2 @@
+[console_scripts]
+p2p-securemsg = p2p_securemsg.cli:main

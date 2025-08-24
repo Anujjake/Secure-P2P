@@ -1,0 +1,184 @@
+Metadata-Version: 2.4
+Name: p2p-securemsg
+Version: 0.1.0
+Summary: A secure peer-to-peer messaging system with end-to-end encryption
+Home-page: https://github.com/yourusername/p2p-securemsg
+Author: Your Name
+Author-email: your.email@example.com
+Project-URL: Bug Reports, https://github.com/yourusername/p2p-securemsg/issues
+Project-URL: Source, https://github.com/yourusername/p2p-securemsg
+Project-URL: Documentation, https://github.com/yourusername/p2p-securemsg/docs
+Keywords: p2p,messaging,encryption,security,cryptography,networking
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Communications :: Chat
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: System :: Networking
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: cryptography>=41.0.0
+Requires-Dist: PyNaCl>=1.5.0
+Requires-Dist: asyncio
+Requires-Dist: psutil>=5.9.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: pytest>=7.0.0
+Requires-Dist: pytest-asyncio>=0.21.0
+Requires-Dist: pytest-cov>=4.0.0
+Requires-Dist: black>=23.0.0
+Requires-Dist: flake8>=6.0.0
+Requires-Dist: mypy>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# P2P Secure Messaging
+
+A secure peer-to-peer messaging system with end-to-end encryption using X25519 key exchange and AES-256-GCM encryption.
+
+## Features
+
+- **End-to-End Encryption**: X25519 key exchange with AES-256-GCM encryption
+- **Peer-to-Peer Communication**: Direct communication without central servers
+- **Rich CLI Interface**: Beautiful command-line interface using Rich library
+- **Secure Memory Management**: Secure wiping of sensitive data using psutil
+- **Async Network Operations**: Built on asyncio for high-performance networking
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd p2p-securemsg
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Install the package:
+```bash
+pip install -e .
+```
+
+## Usage
+
+### Starting the Application
+
+```bash
+# Start with interactive CLI
+python -m p2p_securemsg.cli
+
+# Start with auto-start node
+python -m p2p_securemsg.cli --auto-start --host 0.0.0.0 --port 8080
+```
+
+### Basic Commands
+
+- `start` - Start the P2P node
+- `connect <host> <port> <public_key>` - Connect to a peer
+- `send <peer_id> <message>` - Send a message to a peer
+- `broadcast <message>` - Broadcast a message to all peers
+- `peers` - List connected peers
+- `info` - Show node information
+- `help` - Show help
+- `quit` - Exit the application
+
+## Architecture
+
+### Core Components
+
+1. **Crypto Module** (`crypto.py`)
+   - X25519 key pair generation and management
+   - AES-256-GCM encryption/decryption
+   - Secure memory wiping
+   - Key encoding/decoding utilities
+
+2. **Network Module** (`network.py`)
+   - P2P node implementation
+   - Asynchronous message handling
+   - Peer connection management
+   - Message serialization/deserialization
+
+3. **CLI Module** (`cli.py`)
+   - Rich command-line interface
+   - Interactive command processing
+   - Beautiful output formatting
+
+## Security Features
+
+- **X25519 Key Exchange**: Elliptic curve Diffie-Hellman key exchange
+- **AES-256-GCM**: Authenticated encryption with associated data
+- **Secure Memory Wiping**: Overwriting sensitive data in memory
+- **No Central Authority**: True peer-to-peer communication
+- **Forward Secrecy**: Each session uses unique keys
+
+## Development
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+### Code Formatting
+
+```bash
+black src/
+flake8 src/
+mypy src/
+```
+
+## Dependencies
+
+- **cryptography**: Core encryption functionality
+- **PyNaCl**: X25519 and libsodium bindings
+- **asyncio**: Asynchronous I/O operations
+- **rich**: Rich CLI interface
+- **psutil**: Secure memory management
+- **pytest**: Testing framework
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## Security Considerations
+
+- This is a proof-of-concept implementation
+- Not recommended for production use without additional security audits
+- Consider implementing additional features like:
+  - Perfect forward secrecy
+  - Message authentication
+  - Denial of service protection
+  - NAT traversal 

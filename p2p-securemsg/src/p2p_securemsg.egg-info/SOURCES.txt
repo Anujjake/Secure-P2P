@@ -1,0 +1,16 @@
+README.md
+setup.py
+src/p2p_securemsg/__init__.py
+src/p2p_securemsg/cli.py
+src/p2p_securemsg/crypto.py
+src/p2p_securemsg/encryption.py
+src/p2p_securemsg/network.py
+src/p2p_securemsg.egg-info/PKG-INFO
+src/p2p_securemsg.egg-info/SOURCES.txt
+src/p2p_securemsg.egg-info/dependency_links.txt
+src/p2p_securemsg.egg-info/entry_points.txt
+src/p2p_securemsg.egg-info/not-zip-safe
+src/p2p_securemsg.egg-info/requires.txt
+src/p2p_securemsg.egg-info/top_level.txt
+tests/test_crypto.py
+tests/test_encryption.py
