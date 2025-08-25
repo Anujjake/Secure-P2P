@@ -114,24 +114,23 @@ def encrypt_message(shared_key: bytes, plaintext: bytes) -> EncryptedMessage:
     """
     if len(shared_key) != 32:
         raise ValueError("Shared key must be 32 bytes")
-    
-    # Generate random nonce (12 bytes for GCM)
+    # Use bytearray for sensitive buffers
+    key_buf = bytearray(shared_key)
     nonce = os.urandom(12)
-    
-    # Create cipher
     cipher = Cipher(
-        algorithms.AES(shared_key),
+        algorithms.AES(bytes(key_buf)),
         modes.GCM(nonce),
         backend=default_backend()
     )
     encryptor = cipher.encryptor()
-    
-    # Encrypt the message
-    ciphertext = encryptor.update(plaintext) + encryptor.finalize()
-    
-    # Get the authentication tag
+    if not isinstance(plaintext, (bytes, bytearray)):
+        raise TypeError("Plaintext must be bytes or bytearray")
+    pt_buf = bytearray(plaintext)
+    ciphertext = encryptor.update(bytes(pt_buf)) + encryptor.finalize()
     tag = encryptor.tag
-    
+    # Securely wipe sensitive buffers
+    secure_delete(key_buf)
+    secure_delete(pt_buf)
     return EncryptedMessage(
         ciphertext=ciphertext,
         nonce=nonce,
@@ -156,35 +155,34 @@ def decrypt_message(shared_key: bytes, encrypted_message: EncryptedMessage) -> b
     """
     if len(shared_key) != 32:
         raise ValueError("Shared key must be 32 bytes")
-    
-    # Create cipher
+    key_buf = bytearray(shared_key)
     cipher = Cipher(
-        algorithms.AES(shared_key),
+        algorithms.AES(bytes(key_buf)),
         modes.GCM(encrypted_message.nonce, encrypted_message.tag),
         backend=default_backend()
     )
     decryptor = cipher.decryptor()
-    
-    # Decrypt the message
-    plaintext = decryptor.update(encrypted_message.ciphertext) + decryptor.finalize()
-    
+    ct_buf = bytearray(encrypted_message.ciphertext)
+    plaintext = decryptor.update(bytes(ct_buf)) + decryptor.finalize()
+    # Securely wipe sensitive buffers
+    secure_delete(key_buf)
+    secure_delete(ct_buf)
     return plaintext
 
 
 def secure_delete(data: bytes) -> None:
     """
-    Securely delete data from memory by overwriting with zeros
-    
+    Securely delete data from memory by overwriting with zeros.
+    Only works for mutable types like bytearray.
     Args:
-        data: Data to securely delete
+        data: Data to securely delete (must be bytearray)
+    Raises:
+        TypeError: If data is not a bytearray
     """
-    try:
-        # Overwrite the data with zeros
-        for i in range(len(data)):
-            data[i:i+1] = b'\x00'
-    except (TypeError, ValueError):
-        # Handle cases where data might be immutable or already deleted
-        pass
+    if not isinstance(data, bytearray):
+        raise TypeError("secure_delete only works on bytearray objects!")
+    for i in range(len(data)):
+        data[i] = 0
 
 
 def secure_delete_keypair(keypair: KeyPair) -> None:
@@ -194,8 +192,10 @@ def secure_delete_keypair(keypair: KeyPair) -> None:
     Args:
         keypair: KeyPair to securely delete
     """
-    secure_delete(keypair.private_key)
-    secure_delete(keypair.public_key)
+    if isinstance(keypair.private_key, bytearray):
+        secure_delete(keypair.private_key)
+    if isinstance(keypair.public_key, bytearray):
+        secure_delete(keypair.public_key)
 
 
 def encode_public_key(public_key: bytes) -> str:
